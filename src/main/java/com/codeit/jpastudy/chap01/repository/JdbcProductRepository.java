@@ -7,7 +7,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Repository
 public class JdbcProductRepository {
 
     // PostgreSQL 연결 정보
