@@ -9,6 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -64,6 +66,50 @@ class DepartmentRepositoryTest {
         System.out.println("\n\n\n");
 
     }
+
+    @Test
+    @DisplayName("N+1 문제 발생 예시")
+    void testNPlusOneEx() {
+        // given
+        List<Department> departments = departmentRepository.findAll();
+
+        // when
+        departments.forEach(dept -> {
+            System.out.println("========== 사원 리스트 ==========");
+            List<Employee> empList = dept.getEmployees();
+            System.out.println(empList);
+
+            System.out.println("\n\n");
+        });
+
+
+        // then
+
+
+    }
+
+    @Test
+    @DisplayName("N+1 문제 해결 예시")
+    void testNPlusOneSolution() {
+        // given
+        List<Department> departments = departmentRepository.findAllIncludeEmployees();
+
+        // when
+        departments.forEach(dept -> {
+            System.out.println("========== 사원 리스트 ==========");
+            List<Employee> empList = dept.getEmployees();
+            System.out.println(empList);
+
+            System.out.println("\n\n");
+        });
+
+        // then
+
+
+    }
+
+
+
 
 
 
