@@ -108,6 +108,75 @@ class DepartmentRepositoryTest {
 
     }
 
+    @Test
+    @DisplayName("고아 객체 삭제")
+    void orphanRemovalTest() {
+        /*
+            부모가 삭제되면 그 부모를 참조하던 자식들이 고아가 되면서 자식도 함께 삭제.
+            + 부모쪽에서 관계를 끊어버리면 자식을 DB에서 즉시 삭제.
+         */
+
+        // given
+        Department department = departmentRepository.findById(1L).orElseThrow();
+
+        List<Employee> empList = department.getEmployees();
+
+        // when
+        Employee employee = empList.get(0);
+        System.out.println("타겟 사원: " + employee);
+        empList.remove(employee); // 부모도 자식을 버리고
+        employee.setDepartment(null); // 자식도 부모를 더이상 참조하지 않는다.
+
+
+        // then
+
+    }
+
+    @Test
+    @DisplayName("CASCADE TYPE REMOVE test")
+    void cascadeRemoveTest() {
+        /*
+         CascadeType.REMOVE: 부모가 삭제되면 그 부모를 참조하는 자식 또한 함께 삭제됩니다.
+         다만 OrphanRemoval과 다른 점은, 연결을 끊는다고 지워주지는 않습니다.
+         */
+
+        // given
+        Department department = departmentRepository.findById(3L).orElseThrow();
+
+        List<Employee> empList = department.getEmployees();
+
+        // when
+        Employee employee = empList.get(0);
+        System.out.println("타겟 사원: " + employee);
+        empList.remove(employee); // 부모도 자식을 버리고
+        employee.setDepartment(null); // 자식도 부모를 더이상 참조하지 않는다.
+
+
+    }
+    
+    @Test
+    @DisplayName("cascadeType을 ALL로 주었을 때 부모가 데이터 변경의 주체가 된다.")
+    void cascadeAllTest() {
+        // given
+        Department department = departmentRepository.findById(4L).orElseThrow();
+
+        // when
+        Employee newEmp = Employee.builder()
+                .name("김춘식")
+                .department(department)
+                .build();
+
+        department.getEmployees().add(newEmp);
+
+
+        // then
+
+        
+    }
+    
+
+
+
 
 
 
