@@ -122,9 +122,9 @@ public class AccountService {
         accountRepository.save(to);
 
         // 이체 내역을 기록하고 싶다.
+        // 기록 쪽에서 실패가 발생해도 입/출금은 정상 commit 되게 하고 싶으면 여기다 예외처리 하셔도 됩니다.
         transferService.recordTransferWithNew(from, to, amount);
 
-        throw new RuntimeException("이체 처리 중 오류 발생!");
     }
 
 
